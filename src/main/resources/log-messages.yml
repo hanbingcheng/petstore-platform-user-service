@@ -1,0 +1,8 @@
+logging:
+  messages:
+    user.duplicate:
+      code: "E002001"
+      text: "メールアドレスが重複しています: {0}"
+    user.notfound:
+      code: "E002003"
+      text: "ユーザーが見つかりません: id={0}"
