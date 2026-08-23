@@ -1,8 +1,10 @@
 spring:
   application:
     name: user-service
+  config:
+    import: classpath:cmm-log-messages.yml
   datasource:
-    url: jdbc:mysql://localhost:3306/petstore?useSSL=false&serverTimezone=Asia/Tokyo&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/petstore?useSSL=false&serverTimezone=Asia/Tokyo&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,18 +14,15 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-  config:
-    import: classpath:log-messages.yml
 
 mybatis:
   type-aliases-package: com.example.petstore.user.entity
+  mapper-locations: "classpath:mapper/*.xml"
   configuration:
     map-underscore-to-camel-case: true
 
 server:
   port: 8081
-  servlet:
-    context-path: /api/v1
 
 logging:
   level:
