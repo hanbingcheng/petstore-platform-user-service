@@ -42,3 +42,9 @@ logging:
   level:
     com.example.petstore.user: DEBUG
     org.mybatis: DEBUG
+
+jwt:
+  # HS256 署名用の秘密鍵（32 バイト = 256 ビット以上必須）。本番では必ず環境変数で上書きしてください。
+  secret: "${JWT_SECRET:petstore-demo-secret-key-change-me-in-production-0123456789abcdef}"
+  # トークンの有効期限
+  expiration: 1h

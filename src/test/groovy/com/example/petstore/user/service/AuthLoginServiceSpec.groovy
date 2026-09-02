@@ -18,9 +18,10 @@ class AuthLoginServiceSpec extends Specification {
 
 	UserMapper userMapper = Mock()
 	PasswordEncoder passwordEncoder = Mock()
+	JwtService jwtService = Mock()
 
 	def setup() {
-		authLoginService = new AuthLoginService(userMapper, passwordEncoder)
+		authLoginService = new AuthLoginService(userMapper, passwordEncoder, jwtService)
 	}
 
 	def "正しい認証情報でログインできること"() {
@@ -35,6 +36,7 @@ class AuthLoginServiceSpec extends Specification {
 		when:
 		userMapper.findByEmail("taro@example.com") >> Optional.of(entity)
 		passwordEncoder.matches("correct_password", "hashed_password") >> true
+		jwtService.generateToken(1L, "taro@example.com") >> "jwt-token"
 		def result = authLoginService.execute(request)
 
 		then:

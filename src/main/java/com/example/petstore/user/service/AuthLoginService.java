@@ -7,7 +7,6 @@ import com.example.petstore.user.mapper.UserMapper;
 import com.example.petstore.user.message.UserMessageCode;
 import com.example.petstore.user.model.LoginRequest;
 import com.example.petstore.user.model.LoginResponse;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,7 @@ public class AuthLoginService {
 
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
 
   @StartEndLog
   public LoginResponse execute(LoginRequest request) {
@@ -36,7 +36,7 @@ public class AuthLoginService {
           UserMessageCode.LOGIN_FAILED.getCode(), "Invalid email or password");
     }
 
-    String token = UUID.randomUUID().toString();
+    String token = jwtService.generateToken(user.getId(), user.getEmail());
 
     return new LoginResponse().token(token).userId(user.getId());
   }
