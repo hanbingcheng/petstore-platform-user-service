@@ -2,7 +2,9 @@ package com.example.petstore.user.service
 
 import java.nio.charset.StandardCharsets
 import java.time.Duration
+import java.util.Date
 
+import com.example.petstore.common.exception.UnauthorizedException
 import com.example.petstore.user.config.JwtProperties
 
 import io.jsonwebtoken.Jwts
@@ -41,5 +43,51 @@ class JwtServiceSpec extends Specification {
 		claims.get("email", String.class) == "taro@example.com"
 		claims.getExpiration() != null
 		claims.getIssuedAt() != null
+	}
+
+	def "parseForRefreshで有効なトークンのクレームを取り出せること"() {
+		given:
+		def token = jwtService.generateToken(1L, "taro@example.com")
+
+		when:
+		def claims = jwtService.parseForRefresh(token)
+
+		then:
+		claims.userId() == 1L
+		claims.email() == "taro@example.com"
+	}
+
+	def "parseForRefreshで有効期限切れのトークンでもクレームを取り出せること"() {
+		given:
+		def key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8))
+		def expiredToken = Jwts.builder()
+			.subject("1")
+			.claim("email", "taro@example.com")
+			.issuedAt(new Date(System.currentTimeMillis() - 7200000L))
+			.expiration(new Date(System.currentTimeMillis() - 3600000L))
+			.signWith(key)
+			.compact()
+
+		when:
+		def claims = jwtService.parseForRefresh(expiredToken)
+
+		then:
+		claims.userId() == 1L
+		claims.email() == "taro@example.com"
+	}
+
+	def "parseForRefreshで署名が不正なトークンの場合UnauthorizedExceptionが発生すること"() {
+		given:
+		def wrongKey = Keys.hmacShaKeyFor("wrong-secret-key-for-jwt-signing-0123456789".getBytes(StandardCharsets.UTF_8))
+		def invalidToken = Jwts.builder()
+			.subject("1")
+			.signWith(wrongKey)
+			.compact()
+
+		when:
+		jwtService.parseForRefresh(invalidToken)
+
+		then:
+		thrown(UnauthorizedException)
 	}
 }

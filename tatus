@@ -1,0 +1,38 @@
+warning: LF will be replaced by CRLF in src/main/resources/application.yaml.
+The file will have its original line endings in your working directory
+[1mdiff --git a/src/main/resources/application.yaml b/src/main/resources/application.yaml[m
+[1mindex 16b3cd5..0e6a031 100644[m
+[1m--- a/src/main/resources/application.yaml[m
+[1m+++ b/src/main/resources/application.yaml[m
+[36m@@ -1,8 +1,10 @@[m
+ spring:[m
+   application:[m
+     name: user-service[m
+[32m+[m[32m  config:[m
+[32m+[m[32m    import: classpath:cmm-log-messages.yml[m
+   datasource:[m
+[31m-    url: jdbc:mysql://localhost:3306/petstore?useSSL=false&serverTimezone=Asia/Tokyo&characterEncoding=UTF-8[m
+[32m+[m[32m    url: jdbc:mysql://localhost:3306/petstore?useSSL=false&serverTimezone=Asia/Tokyo&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false[m
+     username: root[m
+     password: root[m
+     driver-class-name: com.mysql.cj.jdbc.Driver[m
+[36m@@ -12,18 +14,15 @@[m [mspring:[m
+       connection-timeout: 30000[m
+       idle-timeout: 600000[m
+       max-lifetime: 1800000[m
+[31m-  config:[m
+[31m-    import: classpath:log-messages.yml[m
+ [m
+ mybatis:[m
+   type-aliases-package: com.example.petstore.user.entity[m
+[32m+[m[32m  mapper-locations: "classpath:mapper/*.xml"[m
+   configuration:[m
+     map-underscore-to-camel-case: true[m
+ [m
+ server:[m
+   port: 8081[m
+[31m-  servlet:[m
+[31m-    context-path: /api/v1[m
+ [m
+ logging:[m
+   level:[m

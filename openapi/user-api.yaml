@@ -70,6 +70,27 @@ paths:
         "401":
           description: 認証エラー
 
+  /refresh:
+    post:
+      tags: [auth]
+      summary: トークンの有効期限を延長（再発行）
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+      responses:
+        "200":
+          description: トークン再発行成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: トークン無効
+
 components:
   schemas:
     User:
@@ -124,3 +145,11 @@ components:
         userId:
           type: integer
           format: int64
+
+    RefreshTokenRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
